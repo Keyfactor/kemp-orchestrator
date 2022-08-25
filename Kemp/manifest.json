@@ -1,0 +1,14 @@
+﻿{
+  "extensions": {
+    "Keyfactor.Orchestrators.Extensions.IOrchestratorJobExtension": {
+      "CertStores.GcpCertManager.Inventory": {
+        "assemblypath": "GcpCertManager.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.GcpCertManager.Jobs.Inventory"
+      },
+      "CertStores.GcpCertManager.Management": {
+        "assemblypath": "GcpCertManager.dll",
+        "TypeFullName": "Keyfactor.Extensions.Orchestrator.GcpCertManager.Jobs.Management"
+      }
+    }
+  }
+}
