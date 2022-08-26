@@ -208,7 +208,7 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
                         _logger.LogTrace($"Public Cert Pem: {pubCertPem}");
 
                         var replaceCertificateResponse =
-                            ReplaceCertificate(alias, certPem, config.Overwrite, client, true);
+                            ReplaceCertificate(config.JobCertificate.Alias, certPem, config.Overwrite, client, true);
 
                         _logger.LogTrace($"Replace Response Code: {replaceCertificateResponse.Code}");
 
@@ -276,9 +276,8 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
                 var certResponse = hasPrivateKey
                     ? client.GetCertificates().Result
                     : client.GetIntermediateCertificates().Result;
-                if (certResponse.Success.Data.Certs.Count(p => p.Name == alias) == 1)
-                    _logger.MethodExit();
-                return certResponse.Success.Data.Certs.Count == 1;
+                _logger.MethodExit();
+                return certResponse.Success.Data.Certs.Count(p => p.Name == alias) == 1;
             }
             catch (Exception e)
             {

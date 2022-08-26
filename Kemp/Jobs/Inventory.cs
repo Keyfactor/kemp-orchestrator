@@ -64,10 +64,10 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
                 intListSerializer.Serialize(intListWriter, intermediateCertificates);
                 _logger.LogTrace($"Intermediate List Result {intListWriter}");
 
-                var inventoryItems = (from cert in certificatesResult.Success.Data.Certs
+                var inventoryItems = (from cert in certificatesResult?.Success?.Data?.Certs
                     let certPem = client.GetCertificate(cert.Name).Result
                     select BuildInventoryItem(cert.Name, certPem.Success.Data.Certificate, true)).ToList();
-                inventoryItems.AddRange(from cert in certificatesResult.Success.Data.Certs
+                inventoryItems.AddRange(from cert in intermediateCertificates?.Success?.Data?.Certs
                     let certPem = client.GetIntermediateCertificate(cert.Name).Result
                     select BuildInventoryItem(cert.Name, certPem.Success.Data.Certificate, false));
 
@@ -87,8 +87,12 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
             }
             catch (Exception e)
             {
-                _logger.LogError($"PerformInventory Error: {LogHandler.FlattenException(e)}");
-                throw;
+                return new JobResult
+                {
+                    Result = OrchestratorJobStatusJobResult.Failure,
+                    JobHistoryId = config.JobHistoryId,
+                    FailureMessage = LogHandler.FlattenException(e)
+                };
             }
         }
 

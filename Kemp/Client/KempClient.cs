@@ -15,15 +15,12 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Client
 {
     public class KempClient
     {
-        public KempClient(ILogger<KempClient> logger)
-        {
-            Logger = logger;
-        }
 
         public KempClient(InventoryJobConfiguration config)
         {
             try
             {
+                Logger = LogHandler.GetClassLogger<KempClient>();
                 var httpClientHandler = new HttpClientHandler
                 {
                     ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
@@ -44,6 +41,7 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Client
         {
             try
             {
+                Logger = LogHandler.GetClassLogger<KempClient>();
                 var httpClientHandler = new HttpClientHandler
                 {
                     ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true
