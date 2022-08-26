@@ -164,12 +164,16 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Client
             }
         }
 
-        public async Task<CertResponse> DeleteCertificate(string alias)
+        public async Task<CertResponse> DeleteCertificate(string alias,bool hasPrivateKey)
         {
             try
             {
                 Logger.MethodEntry();
-                var uri = $"/access/delcert?apikey={ApiKey}&cert={alias}";
+                var certType = "delintermediate";
+                if (hasPrivateKey)
+                    certType = "delcert";
+
+                var uri = $"/access/{certType}?apikey={ApiKey}&cert={alias}";
                 var response = await GetXmlResponseAsync<CertResponse>(await HttpClient.GetAsync(uri));
                 Logger.MethodExit();
                 return response;

@@ -98,9 +98,10 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
 
 
                 var client = new KempClient(config);
-                _logger.LogTrace("Getting Credentials from Google...");
-                _ = client.DeleteCertificate(config.JobCertificate.Alias).Result;
-                _logger.LogTrace("Got Credentials from Google");
+                _logger.LogTrace("Deleting Certificate...");
+                var hasPrivateKey = !string.IsNullOrWhiteSpace(config.JobCertificate.PrivateKeyPassword);
+                _ = client.DeleteCertificate(config.JobCertificate.Alias, hasPrivateKey).Result;
+                _logger.LogTrace("Certificate Deleted...");
 
 
                 _logger.MethodExit();
@@ -141,7 +142,7 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
                     CheckForDuplicate(config.JobCertificate.Alias, hasPrivateKey, client);
                 _logger.LogTrace($"Duplicate? = {duplicate}");
 
-                //Check for Duplicate already in Google Certificate Manager, if there, make sure the Overwrite flag is checked before replacing
+                //Check for Duplicate already in Kemp Load Balancer, if there, make sure the Overwrite flag is checked before replacing
                 if (duplicate && config.Overwrite || !duplicate)
                 {
                     _logger.LogTrace("Either not a duplicate or overwrite was chosen....");
@@ -211,26 +212,36 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
                             ReplaceCertificate(config.JobCertificate.Alias, certPem, config.Overwrite, client, true);
 
                         _logger.LogTrace($"Replace Response Code: {replaceCertificateResponse.Code}");
-
-                        //5. Return success from job
-                        return new JobResult
-                        {
-                            Result = OrchestratorJobStatusJobResult.Success,
-                            JobHistoryId = config.JobHistoryId,
-                            FailureMessage = ""
-                        };
                     }
+                    else
+                    {
+                        var pubCertPem = Pemify(config.JobCertificate.Contents);
+                        pubCertPem = $"-----BEGIN CERTIFICATE-----\r\n{pubCertPem}\r\n-----END CERTIFICATE-----";
+                        _logger.LogTrace($"Public Cert Pem: {pubCertPem}");
+
+                        var replaceCertificateResponse = ReplaceCertificate(config.JobCertificate.Alias, pubCertPem, config.Overwrite, client, false);
+                    }
+
+                    //5. Return success from job
+                    return new JobResult
+                    {
+                        Result = OrchestratorJobStatusJobResult.Success,
+                        JobHistoryId = config.JobHistoryId,
+                        FailureMessage = ""
+                    };
                 }
-
-
-                _logger.MethodExit();
-                return new JobResult
+                else
                 {
-                    Result = OrchestratorJobStatusJobResult.Failure,
-                    JobHistoryId = config.JobHistoryId,
-                    FailureMessage =
-                        $"Duplicate alias {config.JobCertificate.Alias} found in the Kemp Load Balancer, to overwrite use the overwrite flag."
-                };
+
+                    _logger.MethodExit();
+                    return new JobResult
+                    {
+                        Result = OrchestratorJobStatusJobResult.Failure,
+                        JobHistoryId = config.JobHistoryId,
+                        FailureMessage =
+                            $"Duplicate alias {config.JobCertificate.Alias} found in the Kemp Load Balancer, to overwrite use the overwrite flag."
+                    };
+                }
             }
             catch (Exception e)
             {
