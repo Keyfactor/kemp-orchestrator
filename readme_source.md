@@ -2,7 +2,7 @@
 
 **Overview**
 
-The Kemp Load Balancer Orchestrator remotely manages certificates on the Kemp Virtual LoadMaster Load Balancer Product
+The Kemp Load Balancer Orchestrator (LoadMaster) remotely manages certificates on the Kemp Virtual LoadMaster Load Balancer Product
 
 This agent implements three job types – Inventory, Management Add, and Management Remove. Below are the steps necessary to configure this AnyAgent.  It supports adding certificates with or without private keys.
 
