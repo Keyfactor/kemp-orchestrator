@@ -1,6 +1,6 @@
-# Google Cloud Provider Certificate Manager
+# Kemp Load Balancer
 
-Google Certificate Manager Orchestrator for Add, Remove and Inventory.
+Kemp Load Balancer for Add, Remove and Inventory.
 
 #### Integration status: Pilot - Ready for use in test environments. Not for use in production.
 
