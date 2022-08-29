@@ -98,12 +98,12 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
 
 
                 var client = new KempClient(config);
-                _logger.LogTrace("Deleting Certificate...");
-                var hasPrivateKey = !string.IsNullOrWhiteSpace(config.JobCertificate.PrivateKeyPassword);
+                _logger.LogTrace("Getting Certificate...");
+                var cert = client.GetCertificates().Result;
+                //Get list of certs with Private Key and see if there is one in there that matches the remove job alias
+                var hasPrivateKey = cert.Success.Data.Certs.Count(p => p.Name == config.JobCertificate.Alias) == 1;
                 _ = client.DeleteCertificate(config.JobCertificate.Alias, hasPrivateKey).Result;
                 _logger.LogTrace("Certificate Deleted...");
-
-
                 _logger.MethodExit();
 
                 return new JobResult
