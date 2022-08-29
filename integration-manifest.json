@@ -3,5 +3,27 @@
     "integration_type": "orchestrator",
     "name": "Kemp Load Balancer",
     "status": "pilot",
-    "description": "Kemp Load Balancer for Add, Remove and Inventory."
+    "description": "Kemp Load Balancer for Add, Remove and Inventory.",
+    "about": {
+    "orchestrator": {
+      "win": {
+        "supportsCreateStore": false,
+        "supportsDiscovery": false,
+        "supportsManagementAdd": true,
+        "supportsManagementRemove": true,
+        "supportsReenrollment": false,
+        "supportsInventory": true,
+        "platformSupport": "Unused"
+      },
+      "linux": {
+        "supportsCreateStore": false,
+        "supportsDiscovery": false,
+        "supportsManagementAdd": false,
+        "supportsManagementRemove": false,
+        "supportsReenrollment": false,
+        "supportsInventory": false,
+        "platformSupport": "Unused"
+      }
+    }
+  }
 }
