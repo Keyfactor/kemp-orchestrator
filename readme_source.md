@@ -1,43 +1,41 @@
-**Google Cloud Platform Certificate Manager**
+**Kemp Load Balancer Configuration (LoadMaster)**
 
 **Overview**
 
-The GCP Certificate Manager Orchestrator remotely manages certificates on the Google Cloud Platform Certificate Manager Product
+The Kemp Load Balancer Orchestrator remotely manages certificates on the Kemp Virtual LoadMaster Load Balancer Product
 
 This agent implements three job types – Inventory, Management Add, and Management Remove. Below are the steps necessary to configure this AnyAgent.  It supports adding certificates with or without private keys.
 
 
-**Google Cloud Configuration**
+**Kemp LoadMaster Configuration**
 
-1. Read up on [Google Certificate Manager](https://cloud.google.com/certificate-manager/docs) and how it works.
-2. A Google Service Account is needed with the following permissions (Note: Workload Identity Management Should be used but at the time of the writing it was not available in the .net library yet)
-![](images/ServiceAccountSettings.gif)
+1. Read up on [Kemp LoadMaster Load Balancer](https://kemptechnologies.com/virtual-load-balancer) and how it works.
+2. You need to setup a user with the following permissions for API Access on the Kemp Load Balancer
+![](images/ApiUserSetup.gif)
 3. The following Api Access is needed:
 ![](images/ApiAccessNeeded.gif)
-4. Dowload the Json Credential file as shown below:
-![](images/GoogleKeyJsonDownload.gif)
 
-**1. Create the New Certificate Store Type for the GCP Certificate Manager Orchestrator**
+
+**1. Create the New Certificate Store Type for the Kemp Load Balancer Orchestrator**
 
 In Keyfactor Command create a new Certificate Store Type similar to the one below:
 
 #### STORE TYPE CONFIGURATION
 SETTING TAB  |  CONFIG ELEMENT	| DESCRIPTION
 ------|-----------|------------------
-Basic |Name	|Descriptive name for the Store Type.  Google Cloud Certificate Manager can be used.
-Basic |Short Name	|The short name that identifies the registered functionality of the orchestrator. Must be GcpCertMgr
-Basic |Custom Capability|Checked with Name GcpCertManager
+Basic |Name	|Descriptive name for the Store Type.  Kemp Load Balancer can be used.
+Basic |Short Name	|The short name that identifies the registered functionality of the orchestrator. Must be Kemp
+Basic |Custom Capability|Unchecked
 Basic |Job Types	|Inventory, Add, and Remove are the supported job types. 
 Basic |Needs Server	|Must be checked
-Basic |Blueprint Allowed	|Unchecked
+Basic |Blueprint Allowed	|Must be checked
 Basic |Requires Store Password	|Determines if a store password is required when configuring an individual store.  This must be unchecked.
 Basic |Supports Entry Password	|Determined if an individual entry within a store can have a password.  This must be unchecked.
 Advanced |Store Path Type| Determines how the user will enter the store path when setting up the cert store.  Freeform
 Advanced |Supports Custom Alias	|Determines if an individual entry within a store can have a custom Alias.  This must be Required
-Advanced |Private Key Handling |Determines how the orchestrator deals with private keys.  Required
+Advanced |Private Key Handling |Determines how the orchestrator deals with private keys.  Optional
 Advanced |PFX Password Style |Determines password style for the PFX Password. Default
-Custom Fields|Google Cloud Platform Project Location|Name:Location Display Name:Location Type:String Default Value:global Required:True
-Custom Fields|Google Cloud Platform Project Number|Name:Project Number Display Name:Project Number Type:String Default Value:N/A Required:True
+Custom Fields|N/A| There are no Custom Fields
 Entry Parameters|N/A| There are no Entry Parameters
 
 **Basic Settings:**
@@ -56,80 +54,29 @@ Entry Parameters|N/A| There are no Entry Parameters
 
 ![](images/CertStoreType-EntryParameters.gif)
 
-**2. Register the GCP Certificate Manager Orchestrator with Keyfactor**
+**2. Register the Kemp Load Balancer Orchestrator with Keyfactor**
 See Keyfactor InstallingKeyfactorOrchestrators.pdf Documentation.  Get from your Keyfactor contact/representative.
 
-**3. Create a GCP Certificate Manager Certificate Store within Keyfactor Command**
+**3. Create a Kemp Load Balancer Store within Keyfactor Command**
 In Keyfactor Command create a new Certificate Store similar to the one below
 
 ![](images/CertStoreSettings-1.gif)
 ![](images/CertStoreSettings-2.gif)
-![](images/GoogleCloudProjectInfo.gif)
 
 #### STORE CONFIGURATION 
 CONFIG ELEMENT	|DESCRIPTION
 ----------------|---------------
-Category	|The type of certificate store to be configured. Select category based on the display name configured above "GCP Certificate Manager".
+Category	|The type of certificate store to be configured. Select category based on the display name configured above "Kemp Load Balancer".
 Container	|This is a logical grouping of like stores. This configuration is optional and does not impact the functionality of the store.
-Client Machine	|The name of the Google Certificate Manager Credentials File.  This file should be stored in the same directory as the Orchestrator binary.  Sample is "favorable-tree-346417-feb22d67de35.json".
-Store Path	|This will be the ProjectId of the Google Cloud Project.  Sample here is "favorable-tree-346417".  See above image.
-Location|global is the default but could be another region based on the project.
-Project Number| As shown in the above image, this can be obtained from the project information in Google Cloud.
+Client Machine	|Server and port of the kemp load balancer sample is 20.62.33:8443.
+Store Path	|Not used just put a "/".
 Orchestrator	|This is the orchestrator server registered with the appropriate capabilities to manage this certificate store type. 
 Inventory Schedule	|The interval that the system will use to report on what certificates are currently in the store. 
 Use SSL	|This should be checked.
 User	|This is not necessary.
-Password |This is not necessary.
+Password |This is the Kemp Load Balancer API Key setup for the user created in Kemp described in the "LoadMaster Configuration Section".
 
 *** 
-
-#### Usage
-
-**Adding New Certificate No Map Entry**
-
-![](images/AddCertificateNoMapEntry.gif)
-
-*** 
-
-**Adding New Certificate With Map Entry**
-
-![](images/AddCertificateWithMapEntry.gif)
-
-*** 
-
-**Replace Certficate With Map Entry**
-
-![](images/ReplaceCertificateMapEntry.gif)
-
-*** 
-
-**Replace Certficate No Map Entry**
-
-![](images/ReplaceCertificateNoMapEntry.gif)
-
-*** 
-
-**Replace Certficate With Map Entry**
-
-![](images/ReplaceCertificateMapEntry.gif)
-
-*** 
-
-**Replace Certficate No Map Entry**
-
-![](images/ReplaceCertificateNoMapEntry.gif)
-
-***
-
-**Remove Certificate Map Entry**
-
-![](images/RemoveCertifcateMapEntry.gif)
-
-*** 
-
-**Remove Certficate No Map Entry**
-
-![](images/RemoveCertificateNoMapEntry.gif)
 
 
 #### TEST CASES
