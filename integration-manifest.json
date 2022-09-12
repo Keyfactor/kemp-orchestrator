@@ -2,7 +2,7 @@
     "$schema": "https://keyfactor.github.io/integration-manifest-schema.json",
     "integration_type": "orchestrator",
     "name": "Kemp Load Balancer",
-    "status": "production",
+    "status": "pilot",
     "description": "Kemp Load Balancer for Add, Remove and Inventory.",
     "about": {
     "orchestrator": {
