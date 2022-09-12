@@ -2,7 +2,7 @@
 
 Kemp Load Balancer for Add, Remove and Inventory.
 
-#### Integration status: Production - Ready for use in production environments.
+#### Integration status: Pilot - Ready for use in test environments. Not for use in production.
 
 ## About the Keyfactor Universal Orchestrator Capability
 
