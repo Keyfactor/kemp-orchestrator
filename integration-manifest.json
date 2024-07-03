@@ -1,29 +1,33 @@
 {
-    "$schema": "https://keyfactor.github.io/integration-manifest-schema.json",
+    "$schema": "/Users/hroszell/coding/dev/staff-tools/keyfactor.github.io/v2/integration-manifest-schema.json",
     "integration_type": "orchestrator",
     "name": "Kemp Load Balancer",
     "status": "production",
     "description": "Kemp Load Balancer for Add, Remove and Inventory.",
     "about": {
-    "orchestrator": {
-      "win": {
-        "supportsCreateStore": false,
-        "supportsDiscovery": false,
-        "supportsManagementAdd": true,
-        "supportsManagementRemove": true,
-        "supportsReenrollment": false,
-        "supportsInventory": true,
-        "platformSupport": "Unused"
-      },
-      "linux": {
-        "supportsCreateStore": false,
-        "supportsDiscovery": false,
-        "supportsManagementAdd": false,
-        "supportsManagementRemove": false,
-        "supportsReenrollment": false,
-        "supportsInventory": false,
-        "platformSupport": "Unused"
-      }
-    }
-  }
+        "orchestrator": {
+            "win": {
+                "supportsCreateStore": false,
+                "supportsDiscovery": false,
+                "supportsManagementAdd": true,
+                "supportsManagementRemove": true,
+                "supportsReenrollment": false,
+                "supportsInventory": true,
+                "platformSupport": "Unused"
+            },
+            "linux": {
+                "supportsCreateStore": false,
+                "supportsDiscovery": false,
+                "supportsManagementAdd": false,
+                "supportsManagementRemove": false,
+                "supportsReenrollment": false,
+                "supportsInventory": false,
+                "platformSupport": "Unused"
+            },
+            "store_types": []
+        }
+    },
+    "support_level": "kf-supported",
+    "link_github": true,
+    "update_catalog": true
 }
