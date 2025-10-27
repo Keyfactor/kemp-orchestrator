@@ -2,7 +2,87 @@
 
 The Kemp Load Balancer Universal Orchestrator extension enables remote management of cryptographic certificates on Kemp Load Balancers. Kemp Load Balancers use certificates to secure HTTP and HTTPS traffic efficiently, ensuring that sensitive data is encrypted during transit. This extension integrates with Keyfactor Command to automate the process of inventorying, adding, and removing certificates within Kemp Load Balancer environments. By leveraging this orchestrator, administrators can easily manage SSL/TLS certificates, ensuring the security and reliability of their load balancing infrastructure.
 
-#### TEST CASES
+## Enabling API Access on Kemp LoadMaster
+
+This guide describes how to enable and verify API access on a Kemp LoadMaster device for integration with Keyfactor Orchestrator.
+
+---
+
+### 🧩 Step-by-Step: Enabling API Access
+
+#### 1. Log in to the Kemp Web UI
+- Open a browser and go to your LoadMaster’s management interface:
+  ```
+  https://<loadmaster-hostname-or-ip>:8443
+  ```
+- Log in with an administrative account.
+
+---
+
+#### 2. Configure User Permissions and Generate an API Key
+1. Navigate to:
+   ```
+   System Configuration → User Management
+   ```
+2. Under **Rules**, check the box for **Intermediate Certificates**.
+   - This permission allows the orchestrator to upload or replace certificates.
+3. Scroll to the **API Keys** section:
+   - Click **Generate New APIKey**.
+   - Copy and securely store the API key for later use.
+4. (Optional) Under **Local Certificate**:
+   - Click **Generate** to create a self-signed admin certificate.
+   - Click **Download Certificate** if the orchestrator requires importing it.
+
+---
+
+#### 3. Enable API and Administrative Access
+1. Go to:
+   ```
+   System Configuration → Remote Access
+   ```
+2. Under **Administrator Access**, enable the following settings:
+   - ✅ **Allow Web Administrative Access**
+     - **Using:** `eth0` (or the management interface)
+     - **Port:** `8443`
+   - ✅ **Enable API Interface**
+     - **Port:** `8443`
+   - ✅ **Allow Multi Interface Access** (optional, if the orchestrator connects from another subnet)
+   - **Authentication Method:** `Password Only Access (default)`
+   - (Optional) **Enable Software FIPS mode** if required by compliance policies.
+3. Click **Set Administrative Access** (if shown), then **Save Changes**.
+
+---
+
+#### 4. Verify API Access
+Use a command line or PowerShell session to confirm connectivity:
+
+#### 5. Configure in Keyfactor Orchestrator
+When setting up your Kemp Orchestrator Store Type, provide the following values:
+
+| Field | Value |
+|-------|--------|
+| **ServerUsername** | LoadMaster admin username |
+| **ServerPassword** | API Key generated earlier |
+| **ServerUseSsl** | true |
+| **ServerHostname** | e.g., `testkemp:8443` |
+
+---
+
+#### ✅ Summary of Required Settings
+
+| Setting | Location | Value |
+|----------|-----------|--------|
+| Allow Web Administrative Access | System Configuration → Remote Access | Enabled |
+| Enable API Interface | System Configuration → Remote Access | Enabled |
+| API Port | System Configuration → Remote Access | 8443 |
+| Intermediate Certificates Rule | System Configuration → User Management | Enabled |
+| API Key | System Configuration → User Management | Generated |
+| Authentication Method | System Configuration → Remote Access | Password Only (default) |
+
+---
+
+
+### TEST CASES
 Case Number|Case Name|Case Description|Overwrite Flag|Alias Name|Expected Results|Passed|Screenshots
 ------------|---------|----------------|--------------|----------|----------------|--------------|------------
 1|New Add New Alias SSL Certificates|Will Create a new SSL Certificate|False|TC1|New SSL Certificate with Alias TC1 Created On Kemp LoadMaster|True|![](images/TC1Results.gif)
