@@ -368,6 +368,66 @@ If you receive a JSON response, API access is successfully configured.
 
 ---
 
+## Kemp LoadMaster Orchestrator – Behavior Summary
+
+This document summarizes the observed behaviors of the **Kemp LoadMaster Orchestrator** integration during SSL and Intermediate Certificate management operations.  
+It details how the orchestrator interacts with the LoadMaster API, handles overwrite logic, manages bindings, and synchronizes data with Keyfactor Command.
+
+---
+
+### 🧩 Overall Integration Behavior
+
+- The orchestrator communicates with the **Kemp LoadMaster REST API** using the configured **ServerUsername**, **API Key**, and **SSL (HTTPS)** over port 8443.  
+- Operations are driven by the **Overwrite flag** and **Alias Name** supplied in the job parameters.  
+- Certificates are managed in two categories:
+  - **SSL Certificates** – used by virtual services (may be bound/unbound).  
+  - **Intermediate Certificates** – uploaded supporting CA chain files.  
+- The orchestrator validates overwrite rules, binding constraints, and synchronization with Keyfactor Command for each operation.
+
+---
+
+### 🧪 Test Case Behavior Summary
+
+| # | Case Name | Behavior Summary | Outcome |
+|---|------------|------------------|----------|
+| **1** | **New Add New Alias SSL Certificates** | When a new alias (`TC1`) is provided and the certificate does not exist, the orchestrator successfully uploads a new SSL certificate to the LoadMaster and registers it in Keyfactor. | ✅ New certificate created successfully. |
+| **2** | **Replace Alias SSL Certificates** | The orchestrator detects an existing alias (`TC1`) and, with **Overwrite=True**, replaces the existing SSL certificate. The old certificate file is overwritten. | ✅ Replacement successful. |
+| **3** | **Replace Alias SSL Certificates (No Overwrite)** | Attempting to replace an existing alias without the overwrite flag causes the orchestrator to abort the operation and return an error indicating the flag is required. | ✅ Expected error: “Overwrite flag should be used.” |
+| **4** | **Replace Alias Bound SSL Certificates** | When a certificate bound to a virtual service is replaced with **Overwrite=True**, the orchestrator updates the certificate file while maintaining the existing service binding. | ✅ Bound certificate replaced in place. |
+| **5** | **Remove Bound SSL Certificate** | The orchestrator prevents removal of any certificate that is currently bound to a virtual service, returning an error message. | ✅ Error handled correctly (“cannot remove bound certificates”). |
+| **6** | **Remove Unbound SSL Certificate** | The orchestrator removes an SSL certificate only if it is unbound, confirming removal through the LoadMaster API. | ✅ Certificate removed successfully. |
+| **7** | **New Add New Alias Intermediate Certificates** | A new intermediate certificate (`TC8b`) is uploaded since no alias conflict exists. It appears under the Intermediate Certificates list. | ✅ Intermediate certificate created. |
+| **8** | **Replace Alias Intermediate Certificates** | Kemp does not support overwriting intermediate certificates. The orchestrator logs and returns the expected API error (`Filename already exists`). | ✅ Expected failure recorded. |
+| **9** | **Remove Intermediate Certificates** | The orchestrator deletes the intermediate certificate (`TC8b`) from the LoadMaster and synchronizes removal from Keyfactor Command. | ✅ Certificate removed successfully. |
+| **10** | **Inventory Intermediate Certificates** | Performs an inventory scan of all intermediate certificates on the LoadMaster, importing them into Keyfactor Command. | ✅ Inventory successful. |
+| **11** | **Inventory SSL Certificates** | Enumerates all SSL certificates (bound and unbound) on the LoadMaster and updates Keyfactor’s inventory accordingly. | ✅ Inventory successful. |
+
+---
+
+### ⚙️ Functional Insights
+
+- **Overwrite Logic:** SSL certificates respect the `Overwrite` flag. Intermediate certificates cannot be overwritten.  
+- **Binding Awareness:** The orchestrator checks for bound services before delete or replace operations.  
+- **Error Handling:** Clear API error messages are surfaced in Keyfactor job logs.  
+- **Synchronization:** Add/Remove/Inventory maintain consistent state between Keyfactor and LoadMaster.  
+- **Security:** All operations occur over HTTPS using API Key authentication.
+
+---
+
+### ✅ Operation Coverage Summary
+
+| Operation | Certificate Type | Supported | Notes |
+|------------|------------------|------------|--------|
+| Add | SSL | ✅ | Creates new alias or replaces with overwrite flag |
+| Replace | SSL | ✅ | Requires `Overwrite=True` |
+| Replace | Intermediate | ❌ | Unsupported – API rejects |
+| Remove | SSL | ✅ | Allowed only if unbound |
+| Remove | Intermediate | ✅ | Fully supported |
+| Inventory | SSL | ✅ | Returns all SSL certificates |
+| Inventory | Intermediate | ✅ | Returns all intermediate certificates |
+
+---
+
 ## TEST CASES
 Case Number|Case Name|Case Description|Overwrite Flag|Alias Name|Expected Results|Passed|Screenshots
 ------------|---------|----------------|--------------|----------|----------------|--------------|------------
