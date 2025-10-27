@@ -1,29 +1,15 @@
 {
-    "$schema": "https://keyfactor.github.io/integration-manifest-schema.json",
+    "$schema": "https://keyfactor.github.io/v2/integration-manifest-schema.json",
     "integration_type": "orchestrator",
     "name": "Kemp Load Balancer",
     "status": "production",
-    "description": "Kemp Load Balancer for Add, Remove and Inventory.",
+    "description": "The Kemp Load Balancer Universal Orchestrator extension allows for remote management of cryptographic certificates stored in Kemp load balancers, including tasks such as inventory, addition, and removal of certificates.",
     "about": {
-    "orchestrator": {
-      "win": {
-        "supportsCreateStore": false,
-        "supportsDiscovery": false,
-        "supportsManagementAdd": true,
-        "supportsManagementRemove": true,
-        "supportsReenrollment": false,
-        "supportsInventory": true,
-        "platformSupport": "Unused"
-      },
-      "linux": {
-        "supportsCreateStore": false,
-        "supportsDiscovery": false,
-        "supportsManagementAdd": false,
-        "supportsManagementRemove": false,
-        "supportsReenrollment": false,
-        "supportsInventory": false,
-        "platformSupport": "Unused"
-      }
-    }
-  }
+        "orchestrator": {
+            "store_types": []
+        }
+    },
+    "support_level": "kf-supported",
+    "link_github": true,
+    "update_catalog": true
 }
