@@ -6,8 +6,8 @@
 "update_catalog": true,
 "link_github": true,
 "support_level": "kf-supported",
-"release_project": "kemp-orchestrator/Kemp/Kemp.csproj",
-"release_dir": "kemp-orchestrator/Kemp/bin/Release",
+"release_project": "Kemp/Kemp.csproj",
+"release_dir": "Kemp/bin/Release",
 "description": "Kemp Load Balancer for Add, Remove and Inventory.",
 "about": {
 "orchestrator": {
