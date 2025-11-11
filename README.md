@@ -31,7 +31,7 @@
 
 ## Overview
 
-The Kemp Load Balancer Universal Orchestrator extension enables remote management of cryptographic certificates on Kemp Load Balancers. Kemp Load Balancers use certificates to secure HTTP and HTTPS traffic efficiently, ensuring that sensitive data is encrypted during transit. This extension integrates with Keyfactor Command to automate the process of inventorying, adding, and removing certificates within Kemp Load Balancer environments. By leveraging this orchestrator, administrators can easily manage SSL/TLS certificates, ensuring the security and reliability of their load balancing infrastructure.
+TODO Overview is a required section
 
 
 
@@ -49,6 +49,8 @@ The Kemp Load Balancer Universal Orchestrator extension is supported by Keyfacto
 Before installing the Kemp Load Balancer Universal Orchestrator extension, we recommend that you install [kfutil](https://github.com/Keyfactor/kfutil). Kfutil is a command-line tool that simplifies the process of creating store types, installing extensions, and instantiating certificate stores in Keyfactor Command.
 
 
+TODO Requirements is an optional section. If this section doesn't seem necessary on initial glance, please delete it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+
 
 ## Kemp Certificate Store Type
 
@@ -56,16 +58,8 @@ To use the Kemp Load Balancer Universal Orchestrator extension, you **must** cre
 
 
 
-TODO Overview is a required section
-TODO Global Store Type Section is an optional section. If this section doesn't seem necessary on initial glance, please delete it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+The Kemp Load Balancer Universal Orchestrator extension enables remote management of cryptographic certificates on Kemp Load Balancers. Kemp Load Balancers use certificates to secure HTTP and HTTPS traffic efficiently, ensuring that sensitive data is encrypted during transit. This extension integrates with Keyfactor Command to automate the process of inventorying, adding, and removing certificates within Kemp Load Balancer environments. By leveraging this orchestrator, administrators can easily manage SSL/TLS certificates, ensuring the security and reliability of their load balancing infrastructure.
 
-
-
-
-
-#### Kemp Requirements
-
-TODO Requirements is an optional section. If this section doesn't seem necessary on initial glance, please delete it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
 
 
 
@@ -204,13 +198,13 @@ the Keyfactor Command Portal
 > The above installation steps can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/InstallingAgents/NetCoreOrchestrator/CustomExtensions.htm?Highlight=extensions).
 
 
+## Post Installation
+
+TODO Post Installation is an optional section. If this section doesn't seem necessary on initial glance, please delete it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+
 
 ## Defining Certificate Stores
 
-
-TODO Global Store Type Section is an optional section. If this section doesn't seem necessary on initial glance, please delete it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
-
-TODO Certificate Store Configuration is an optional section. If this section doesn't seem necessary on initial glance, please delete it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
 
 
 ### Store Creation
@@ -294,19 +288,9 @@ Please refer to the **Universal Orchestrator (remote)** usage section ([PAM prov
 > The content in this section can be supplemented by the [official Command documentation](https://software.keyfactor.com/Core-OnPrem/Current/Content/ReferenceGuide/Certificate%20Stores.htm?Highlight=certificate%20store).
 
 
-## Discovering Certificate Stores with the Discovery Job
+### 🧩 Step-by-Step: Enabling API Access for a User
 
-### Kemp Discovery Job
-TODO Global Store Type Section is an optional section. If this section doesn't seem necessary on initial glance, please delete it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
-
-
-TODO Discovery Job Configuration is an optional section. If this section doesn't seem necessary on initial glance, please delete it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
-
-
-
-## 🧩 Step-by-Step: Enabling API Access for a User
-
-### 1. Log in to the Kemp Web UI
+#### 1. Log in to the Kemp Web UI
 - In your browser, go to:
   ```
   https://<loadmaster-hostname-or-ip>:8443
@@ -315,7 +299,7 @@ TODO Discovery Job Configuration is an optional section. If this section doesn't
 
 ---
 
-### 2. Edit the User Permissions
+#### 2. Edit the User Permissions
 1. In the left-hand menu, navigate to:
    ```
    System Configuration → System Administration → User Management
@@ -331,7 +315,7 @@ These permissions allow the orchestrator to create and manage intermediate and s
 
 ---
 
-### 3. Generate and Record the API Key
+#### 3. Generate and Record the API Key
 1. Scroll down to the **API Keys** section.
 2. Click **Generate New APIKey** to create a new key for API authentication.
 3. Copy and securely store this key — it will be used in your Keyfactor orchestrator configuration as the **ServerPassword** or **API Key**.
@@ -339,22 +323,22 @@ These permissions allow the orchestrator to create and manage intermediate and s
 
 ---
 
-### 4. Verify API Access
+#### 4. Verify API Access
 Use a command line or PowerShell session to verify connectivity:
 
-#### Using curl:
+##### Using curl:
 ```bash
 curl -k -H "Authorization: <API_KEY>" https://<loadmaster-ip>:8443/access/list
 ```
 
-#### Using PowerShell:
+##### Using PowerShell:
 ```powershell
 Invoke-RestMethod -Uri "https://<loadmaster-ip>:8443/access/list" -Headers @{ Authorization = "<API_KEY>" } -SkipCertificateCheck
 ```
 
 If you receive a JSON response, API access is successfully configured.
 
-### ✅ Summary of Required Settings
+#### ✅ Summary of Required Settings
 
 | Setting | Location | Value |
 |----------|-----------|--------|
@@ -368,14 +352,14 @@ If you receive a JSON response, API access is successfully configured.
 
 ---
 
-## Kemp LoadMaster Orchestrator – Behavior Summary
+### Kemp LoadMaster Orchestrator – Behavior Summary
 
 This document summarizes the observed behaviors of the **Kemp LoadMaster Orchestrator** integration during SSL and Intermediate Certificate management operations.  
 It details how the orchestrator interacts with the LoadMaster API, handles overwrite logic, manages bindings, and synchronizes data with Keyfactor Command.
 
 ---
 
-### 🧩 Overall Integration Behavior
+#### 🧩 Overall Integration Behavior
 
 - The orchestrator communicates with the **Kemp LoadMaster REST API** using the configured **ServerUsername**, **API Key**, and **SSL (HTTPS)** over port 8443.  
 - Operations are driven by the **Overwrite flag** and **Alias Name** supplied in the job parameters.  
@@ -386,7 +370,7 @@ It details how the orchestrator interacts with the LoadMaster API, handles overw
 
 ---
 
-### 🧪 Test Case Behavior Summary
+#### 🧪 Test Case Behavior Summary
 
 | # | Case Name | Behavior Summary | Outcome |
 |---|------------|------------------|----------|
@@ -404,7 +388,7 @@ It details how the orchestrator interacts with the LoadMaster API, handles overw
 
 ---
 
-### ⚙️ Functional Insights
+#### ⚙️ Functional Insights
 
 - **Overwrite Logic:** SSL certificates respect the `Overwrite` flag. Intermediate certificates cannot be overwritten.  
 - **Binding Awareness:** The orchestrator checks for bound services before delete or replace operations.  
@@ -414,7 +398,7 @@ It details how the orchestrator interacts with the LoadMaster API, handles overw
 
 ---
 
-### ✅ Operation Coverage Summary
+#### ✅ Operation Coverage Summary
 
 | Operation | Certificate Type | Supported | Notes |
 |------------|------------------|------------|--------|
@@ -428,7 +412,7 @@ It details how the orchestrator interacts with the LoadMaster API, handles overw
 
 ---
 
-## TEST CASES
+### TEST CASES
 Case Number|Case Name|Case Description|Overwrite Flag|Alias Name|Expected Results|Passed|Screenshots
 ------------|---------|----------------|--------------|----------|----------------|--------------|------------
 1|New Add New Alias SSL Certificates|Will Create a new SSL Certificate|False|TC1|New SSL Certificate with Alias TC1 Created On Kemp LoadMaster|True|![](images/TC1Results.gif)
@@ -441,7 +425,13 @@ Case Number|Case Name|Case Description|Overwrite Flag|Alias Name|Expected Result
 8|Replace Alias Intermediate Certificates|You cannot replace intermediate certificates|True|TC8b|Command Failed: Filename already exists|True|![](images/TC8Results.gif)
 9|Remove Intermediate Certificates|Intermediate Certificate Will Be Removed|N/A|TC8b|Intermediate Certificate Is Removed From Keyfactor and the LoadMaster|True|![](images/TC9Results.gif)
 10|Inventory Intermediate Certificates|Intermediate Certificate Will Be Inventoried|N/A|N/A|Intermediate Certificate Is Inventoried to Keyfactor|True|![](images/TC10Results.gif)
-11|Inventory SSL Certificates|SS: Certificate Will Be Inventoried|N/A|N/A|SSL Certificate Is Inventoried to Keyfactor|True|![](images/TC11Results.gif)
+11|Inventory SSL Certificates|SSL Certificate Will Be Inventoried|N/A|N/A|SSL Certificate Is Inventoried to Keyfactor|True|![](images/TC11Results.gif)
+
+## Discovering Certificate Stores with the Discovery Job
+TODO Discovery is an optional section. If this section doesn't seem necessary on initial glance, please delete it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+
+
+
 
 
 ## License
