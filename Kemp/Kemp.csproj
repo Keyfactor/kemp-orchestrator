@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>Keyfactor.Extensions.Orchestrator.Kemp</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <ImplicitUsings>disable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -22,7 +23,7 @@
     <PackageReference Include="Keyfactor.Orchestrators.IOrchestratorJobExtensions" Version="0.6.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
-    <PackageReference Include="RestSharp" Version="107.2.1" />
+    <PackageReference Include="RestSharp" Version="112.1.0" />
     <PackageReference Include="System.Management.Automation" Version="7.0.5" />
   </ItemGroup>
 
