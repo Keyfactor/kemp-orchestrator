@@ -1,16 +1,4 @@
 ## Overview
 
-TODO Overview is a required section
-
-## Requirements
-
-TODO Requirements is an optional section. If this section doesn't seem necessary on initial glance, please delete it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
-
-## Post Installation
-
-TODO Post Installation is an optional section. If this section doesn't seem necessary on initial glance, please delete it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
-
-## Discovery
-
-TODO Discovery is an optional section. If this section doesn't seem necessary on initial glance, please delete it. Refer to the docs on [Confluence](https://keyfactor.atlassian.net/wiki/x/SAAyHg) for more info
+The Kemp Load Balancer Universal Orchestrator extension enables remote management of cryptographic certificates on Kemp Load Balancers. Kemp Load Balancers use certificates to secure HTTP and HTTPS traffic efficiently, ensuring that sensitive data is encrypted during transit. This extension integrates with Keyfactor Command to automate the process of inventorying, adding, and removing certificates within Kemp Load Balancer environments. By leveraging this orchestrator, administrators can easily manage SSL/TLS certificates, ensuring the security and reliability of their load balancing infrastructure.
 
