@@ -2,8 +2,6 @@
     Kemp Load Balancer Universal Orchestrator Extension
 </h1>
 
-
-
 <p align="center">
   <!-- Badges -->
 <img src="https://img.shields.io/badge/integration_status-production-3D1973?style=flat-square" alt="Integration Status: production" />
@@ -164,6 +162,7 @@ the Keyfactor Command Portal
    Should be true, http is not supported.
 
    ![Kemp Custom Field - ServerUseSsl](docsource/images/Kemp-custom-field-ServerUseSsl-dialog.svg)
+   ![Kemp Custom Field - ServerUseSsl](docsource/images/Kemp-custom-field-ServerUseSsl-validation-options-dialog.svg)
 
 
    </details>
