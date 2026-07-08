@@ -29,11 +29,10 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
         public JobResult ProcessJob(InventoryJobConfiguration jobConfiguration, SubmitInventoryUpdate submitInventoryUpdate)
         {
             _logger = LogHandler.GetClassLogger(this.GetType());
-            
+            _logger.MethodEntry();
+
             try
             {
-                _logger.MethodEntry();
-
                 string password = PAMUtilities.ResolvePAMField(_resolver, _logger, "Kemp ApiKey", jobConfiguration.ServerPassword);
                 jobConfiguration.ServerPassword = password;
 
@@ -51,7 +50,6 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
             try
             {
                 _logger.MethodEntry(LogLevel.Debug);
-                _logger.LogTrace($"Inventory Config {JsonConvert.SerializeObject(config)}");
                 
                 _logger.LogTrace(
                     $"Client Machine: {config.CertificateStoreDetails.ClientMachine} ApiKey: *********");
@@ -110,7 +108,7 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
             try
             {
                 _logger.MethodEntry();
-                _logger.LogTrace($"Alias: {alias} Pem: {certPem} PrivateKey: {privateKey}");
+                _logger.LogTrace($"Alias: {alias} Pem: {certPem} PrivateKey: *******");
 
 
                 var acsi = new CurrentInventoryItem

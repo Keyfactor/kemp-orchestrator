@@ -38,11 +38,10 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
         public JobResult ProcessJob(ManagementJobConfiguration jobConfiguration)
         {
             _logger = LogHandler.GetClassLogger(this.GetType());
-            
+            _logger.MethodEntry();
+
             try
             {
-                _logger.MethodEntry();
-
                 string password = PAMUtilities.ResolvePAMField(_resolver, _logger, "Kemp ApiKey", jobConfiguration.ServerPassword);
                 jobConfiguration.ServerPassword = password;
 
@@ -72,13 +71,11 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
                 if (config.OperationType.ToString() == "Add")
                 {
                     _logger.LogTrace("Adding...");
-                    _logger.LogTrace($"Add Config Json {JsonConvert.SerializeObject(config)}");
                     complete = PerformAddition(config);
                 }
                 else if (config.OperationType.ToString() == "Remove")
                 {
                     _logger.LogTrace("Removing...");
-                    _logger.LogTrace($"Remove Config Json {JsonConvert.SerializeObject(config)}");
                     complete = PerformRemoval(config);
                 }
 
@@ -154,7 +151,7 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
                     _logger.LogTrace("Either not a duplicate or overwrite was chosen....");
                     if (hasPrivateKey) // This is a PFX Entry
                     {
-                        _logger.LogTrace($"Found Private Key {config.JobCertificate.PrivateKeyPassword}");
+                        _logger.LogTrace($"Found Private Key *******");
 
                         if (string.IsNullOrWhiteSpace(config.JobCertificate.Alias))
                             _logger.LogTrace("No Alias Found");
@@ -184,20 +181,17 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
                                 alias = p.Aliases.Cast<string>().SingleOrDefault(a => p.IsKeyEntry(a));
                                 _logger.LogTrace($"Alias = {alias}");
                                 var publicKey = p.GetCertificate(alias).Certificate.GetPublicKey();
-                                _logger.LogTrace($"publicKey = {publicKey}");
                                 KeyEntry = p.GetKey(alias);
-                                _logger.LogTrace($"KeyEntry = {KeyEntry}");
                                 if (KeyEntry == null) throw new Exception("Unable to retrieve private key");
 
                                 var privateKey = KeyEntry.Key;
-                                _logger.LogTrace($"privateKey = {privateKey}");
                                 var keyPair = new AsymmetricCipherKeyPair(publicKey, privateKey);
 
                                 pemWriter.WriteObject(keyPair.Private);
                                 streamWriter.Flush();
                                 privateKeyString = Encoding.ASCII.GetString(memoryStream.GetBuffer()).Trim()
                                     .Replace("\r", "").Replace("\0", "");
-                                _logger.LogTrace($"Got Private Key String {privateKeyString}");
+                                _logger.LogTrace($"Got Private Key String *******");
                                 memoryStream.Close();
                                 streamWriter.Close();
                                 _logger.LogTrace("Finished Extracting Private Key...");
