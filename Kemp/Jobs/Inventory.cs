@@ -32,10 +32,11 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
             
             try
             {
+                _logger.MethodEntry();
+
                 string password = PAMUtilities.ResolvePAMField(_resolver, _logger, "Kemp ApiKey", jobConfiguration.ServerPassword);
                 jobConfiguration.ServerPassword = password;
 
-                _logger.MethodEntry();
                 return PerformInventory(jobConfiguration, submitInventoryUpdate);
             }
             catch (Exception e)
@@ -53,7 +54,7 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
                 _logger.LogTrace($"Inventory Config {JsonConvert.SerializeObject(config)}");
                 
                 _logger.LogTrace(
-                    $"Client Machine: {config.CertificateStoreDetails.ClientMachine} ApiKey: {config.ServerPassword}");
+                    $"Client Machine: {config.CertificateStoreDetails.ClientMachine} ApiKey: *********");
 
                 var client = new KempClient(config);
 

@@ -41,10 +41,11 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
             
             try
             {
+                _logger.MethodEntry();
+
                 string password = PAMUtilities.ResolvePAMField(_resolver, _logger, "Kemp ApiKey", jobConfiguration.ServerPassword);
                 jobConfiguration.ServerPassword = password;
 
-                _logger.MethodEntry();
                 _logger.MethodExit();
                 return PerformManagement(jobConfiguration);
             }
@@ -99,7 +100,7 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
                 _logger.MethodEntry();
 
                 _logger.LogTrace(
-                    $"Credentials JSON: Url: {config.CertificateStoreDetails.ClientMachine} Password: {config.ServerPassword}");
+                    $"Credentials JSON: Url: {config.CertificateStoreDetails.ClientMachine} Password: **********");
 
 
                 var client = new KempClient(config);
@@ -137,7 +138,7 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
             {
                 _logger.MethodEntry();
                 _logger.LogTrace(
-                    $"Credentials JSON: Url: {config.CertificateStoreDetails.ClientMachine} Password: {config.ServerPassword}");
+                    $"Credentials JSON: Url: {config.CertificateStoreDetails.ClientMachine} Password: *********");
 
 
                 var client = new KempClient(config);
