@@ -1,34 +1,41 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Xml.Serialization;
 using Keyfactor.Extensions.Orchestrator.Kemp.Client;
 using Keyfactor.Extensions.Orchestrator.Kemp.Client.Models;
 using Keyfactor.Logging;
 using Keyfactor.Orchestrators.Common.Enums;
 using Keyfactor.Orchestrators.Extensions;
+using Keyfactor.Orchestrators.Extensions.Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
+using System.IO;
+using System.Linq;
+using System.Xml.Linq;
+using System.Xml.Serialization;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
 {
     public class Inventory : IInventoryJobExtension
     {
-        private readonly ILogger<Inventory> _logger;
+        public IPAMSecretResolver _resolver;
+        public string ExtensionName => "Kemp";
+        private ILogger _logger;
 
-        public Inventory(ILogger<Inventory> logger)
+        public Inventory(IPAMSecretResolver resolver)
         {
-            _logger = logger;
+            _resolver = resolver;
         }
 
-        public string ExtensionName => "Kemp";
-
-        public JobResult ProcessJob(InventoryJobConfiguration jobConfiguration,
-            SubmitInventoryUpdate submitInventoryUpdate)
+        public JobResult ProcessJob(InventoryJobConfiguration jobConfiguration, SubmitInventoryUpdate submitInventoryUpdate)
         {
+            _logger = LogHandler.GetClassLogger(this.GetType());
+            _logger.MethodEntry();
+
             try
             {
-                _logger.MethodEntry();
+                string password = PAMUtilities.ResolvePAMField(_resolver, _logger, "Kemp ApiKey", jobConfiguration.ServerPassword);
+                jobConfiguration.ServerPassword = password;
+
                 return PerformInventory(jobConfiguration, submitInventoryUpdate);
             }
             catch (Exception e)
@@ -43,9 +50,9 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
             try
             {
                 _logger.MethodEntry(LogLevel.Debug);
-                _logger.LogTrace($"Inventory Config {JsonConvert.SerializeObject(config)}");
+                
                 _logger.LogTrace(
-                    $"Client Machine: {config.CertificateStoreDetails.ClientMachine} ApiKey: {config.ServerPassword}");
+                    $"Client Machine: {config.CertificateStoreDetails.ClientMachine} ApiKey: *********");
 
                 var client = new KempClient(config);
 
@@ -101,7 +108,7 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
             try
             {
                 _logger.MethodEntry();
-                _logger.LogTrace($"Alias: {alias} Pem: {certPem} PrivateKey: {privateKey}");
+                _logger.LogTrace($"Alias: {alias} Pem: {certPem} PrivateKey: *******");
 
 
                 var acsi = new CurrentInventoryItem
