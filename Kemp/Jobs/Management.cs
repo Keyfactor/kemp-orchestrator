@@ -1,17 +1,18 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Keyfactor.Extensions.Orchestrator.Kemp.Client;
+﻿using Keyfactor.Extensions.Orchestrator.Kemp.Client;
 using Keyfactor.Extensions.Orchestrator.Kemp.Client.Models;
 using Keyfactor.Logging;
 using Keyfactor.Orchestrators.Common.Enums;
 using Keyfactor.Orchestrators.Extensions;
+using Keyfactor.Orchestrators.Extensions.Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.OpenSsl;
 using Org.BouncyCastle.Pkcs;
+using System;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
 {
@@ -23,23 +24,27 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
         private static readonly Func<string, string> Pemify = ss =>
             ss.Length <= 64 ? ss : ss.Substring(0, 64) + "\n" + Pemify(ss.Substring(64));
 
-        private readonly ILogger<Management> _logger;
+        public IPAMSecretResolver _resolver;
+        public string ExtensionName => "Kemp";
+        private ILogger _logger;
 
-        public Management(ILogger<Management> logger)
+        public Management(IPAMSecretResolver resolver)
         {
-            _logger = logger;
+            _resolver = resolver;
         }
 
         protected internal virtual AsymmetricKeyEntry KeyEntry { get; set; }
 
-        public string ExtensionName => "Kemp";
-
-
         public JobResult ProcessJob(ManagementJobConfiguration jobConfiguration)
         {
+            _logger = LogHandler.GetClassLogger(this.GetType());
+            _logger.MethodEntry();
+
             try
             {
-                _logger.MethodEntry();
+                string password = PAMUtilities.ResolvePAMField(_resolver, _logger, "Kemp ApiKey", jobConfiguration.ServerPassword);
+                jobConfiguration.ServerPassword = password;
+
                 _logger.MethodExit();
                 return PerformManagement(jobConfiguration);
             }
@@ -66,13 +71,11 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
                 if (config.OperationType.ToString() == "Add")
                 {
                     _logger.LogTrace("Adding...");
-                    _logger.LogTrace($"Add Config Json {JsonConvert.SerializeObject(config)}");
                     complete = PerformAddition(config);
                 }
                 else if (config.OperationType.ToString() == "Remove")
                 {
                     _logger.LogTrace("Removing...");
-                    _logger.LogTrace($"Remove Config Json {JsonConvert.SerializeObject(config)}");
                     complete = PerformRemoval(config);
                 }
 
@@ -94,7 +97,7 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
                 _logger.MethodEntry();
 
                 _logger.LogTrace(
-                    $"Credentials JSON: Url: {config.CertificateStoreDetails.ClientMachine} Password: {config.ServerPassword}");
+                    $"Credentials JSON: Url: {config.CertificateStoreDetails.ClientMachine} Password: **********");
 
 
                 var client = new KempClient(config);
@@ -132,7 +135,7 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
             {
                 _logger.MethodEntry();
                 _logger.LogTrace(
-                    $"Credentials JSON: Url: {config.CertificateStoreDetails.ClientMachine} Password: {config.ServerPassword}");
+                    $"Credentials JSON: Url: {config.CertificateStoreDetails.ClientMachine} Password: *********");
 
 
                 var client = new KempClient(config);
@@ -148,7 +151,7 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
                     _logger.LogTrace("Either not a duplicate or overwrite was chosen....");
                     if (hasPrivateKey) // This is a PFX Entry
                     {
-                        _logger.LogTrace($"Found Private Key {config.JobCertificate.PrivateKeyPassword}");
+                        _logger.LogTrace($"Found Private Key *******");
 
                         if (string.IsNullOrWhiteSpace(config.JobCertificate.Alias))
                             _logger.LogTrace("No Alias Found");
@@ -178,20 +181,17 @@ namespace Keyfactor.Extensions.Orchestrator.Kemp.Jobs
                                 alias = p.Aliases.Cast<string>().SingleOrDefault(a => p.IsKeyEntry(a));
                                 _logger.LogTrace($"Alias = {alias}");
                                 var publicKey = p.GetCertificate(alias).Certificate.GetPublicKey();
-                                _logger.LogTrace($"publicKey = {publicKey}");
                                 KeyEntry = p.GetKey(alias);
-                                _logger.LogTrace($"KeyEntry = {KeyEntry}");
                                 if (KeyEntry == null) throw new Exception("Unable to retrieve private key");
 
                                 var privateKey = KeyEntry.Key;
-                                _logger.LogTrace($"privateKey = {privateKey}");
                                 var keyPair = new AsymmetricCipherKeyPair(publicKey, privateKey);
 
                                 pemWriter.WriteObject(keyPair.Private);
                                 streamWriter.Flush();
                                 privateKeyString = Encoding.ASCII.GetString(memoryStream.GetBuffer()).Trim()
                                     .Replace("\r", "").Replace("\0", "");
-                                _logger.LogTrace($"Got Private Key String {privateKeyString}");
+                                _logger.LogTrace($"Got Private Key String *******");
                                 memoryStream.Close();
                                 streamWriter.Close();
                                 _logger.LogTrace("Finished Extracting Private Key...");
